@@ -1,10 +1,13 @@
 import os
+from pathlib import Path
+
 import numpy as np
 import crepe
+from scipy.io import wavfile
 
 # this data contains a sine sweep
-file = os.path.join(os.path.dirname(__file__), 'sweep.wav')
-f0_file = os.path.join(os.path.dirname(__file__), 'sweep.f0.csv')
+file = Path(__file__).parent / 'sweep.wav'
+f0_file = Path(__file__).parent / 'sweep.f0.csv'
 
 
 def verify_f0():
@@ -20,8 +23,13 @@ def verify_f0():
 
 
 def test_sweep():
-    crepe.process_file(file)
+    crepe.process_file(str(file))
     verify_f0()
+
+def test_sweep_predict():
+    sr, data = wavfile.read(file)
+    t, f0, confidence, activation = crepe.predict(data, sr, model_capacity="tiny")
+    print("done")
 
 
 def test_sweep_cli():

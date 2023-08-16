@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import os
 import sys
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
@@ -137,9 +135,6 @@ def main():
     parser.add_argument('--save-activation', '-a', action='store_true',
                         help='save the output activation matrix to a .npy '
                              'file')
-    parser.add_argument('--save-plot', '-p', action='store_true',
-                        help='save a plot of the activation matrix to a .png '
-                             'file')
     parser.add_argument('--plot-voicing', '-v', action='store_true',
                         help='Plot the voicing prediction on top of the '
                              'output activation matrix plot')
@@ -166,7 +161,6 @@ def main():
         model_capacity=args.model_capacity,
         viterbi=args.viterbi,
         save_activation=args.save_activation,
-        save_plot=args.save_plot,
         plot_voicing=args.plot_voicing,
         no_centering=args.no_centering,
         step_size=args.step_size,

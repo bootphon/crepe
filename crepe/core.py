@@ -1,6 +1,3 @@
-from __future__ import division
-from __future__ import print_function
-
 import os
 import re
 import sys
@@ -271,8 +268,8 @@ def predict(audio, sr, model_capacity='full',
 
 
 def process_file(file, output=None, model_capacity='full', viterbi=False,
-                 center=True, save_activation=False, save_plot=False,
-                 plot_voicing=False, step_size=10, verbose=True):
+                 center=True, save_activation=False,
+                 step_size=10, verbose=True):
     """
     Use the input model to perform pitch estimation on the input file.
 
@@ -294,13 +291,6 @@ def process_file(file, output=None, model_capacity='full', viterbi=False,
         - If `False`, then `D[:, t]` begins at `audio[t * hop_length]`
     save_activation : bool
         Save the output activation matrix to an .npy file. False by default.
-    save_plot : bool
-        Save a plot of the output activation matrix to a .png file. False by
-        default.
-    plot_voicing : bool
-        Include a visual representation of the voicing activity detection in
-        the plot of the output activation matrix. False by default, only
-        relevant if save_plot is True.
     step_size : int
         The step size in milliseconds for running pitch estimation.
     verbose : bool
@@ -340,27 +330,3 @@ def process_file(file, output=None, model_capacity='full', viterbi=False,
         if verbose:
             print("CREPE: Saved the activation matrix at {}".format(
                 activation_path))
-
-    # save the salience visualization in a PNG file
-    if save_plot:
-        import matplotlib.cm
-        from imageio import imwrite
-
-        plot_file = output_path(file, ".activation.png", output)
-        # to draw the low pitches in the bottom
-        salience = np.flip(activation, axis=1)
-        inferno = matplotlib.cm.get_cmap('inferno')
-        image = inferno(salience.transpose())
-
-        if plot_voicing:
-            # attach a soft and hard voicing detection result under the
-            # salience plot
-            image = np.pad(image, [(0, 20), (0, 0), (0, 0)], mode='constant')
-            image[-20:-10, :, :] = inferno(confidence)[np.newaxis, :, :]
-            image[-10:, :, :] = (
-                inferno((confidence > 0.5).astype(np.float))[np.newaxis, :, :])
-
-        imwrite(plot_file, (255 * image).astype(np.uint8))
-        if verbose:
-            print("CREPE: Saved the salience plot at {}".format(plot_file))
-
