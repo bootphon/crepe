@@ -1,10 +1,13 @@
+import bz2
 import os
 import re
 import sys
+import urllib.request
+from pathlib import Path
 
-from scipy.io import wavfile
 import numpy as np
 from numpy.lib.stride_tricks import as_strided
+from scipy.io import wavfile
 
 # store as a global variable, since we only support a few models for now
 models = {
@@ -17,6 +20,19 @@ models = {
 
 # the model is trained on 16kHz audio
 model_srate = 16000
+
+BASE_URL = 'https://github.com/marl/crepe/raw/models/'
+
+
+def download_model(model_name: str):
+    weights_filename = f"model-{model_name}.h5"
+    compressed_filename = f'{weights_filename}.bz2'
+    target_filepath = Path(__file__).parent / weights_filename
+    with urllib.request.urlopen(BASE_URL + compressed_filename) as response:
+        print(f'Downloading weight file {compressed_filename} ...')
+        with open(target_filepath, "wb") as model_file:
+            print('Decompressing ...')
+            model_file.write(bz2.decompress(response.read()))
 
 
 def build_and_load_model(model_capacity):
@@ -69,9 +85,12 @@ def build_and_load_model(model_capacity):
 
         model = Model(inputs=x, outputs=y)
 
-        package_dir = os.path.dirname(os.path.realpath(__file__))
-        filename = "model-{}.h5".format(model_capacity)
-        model.load_weights(os.path.join(package_dir, filename))
+        package_dir = Path(__file__).parent
+        filename = f"model-{model_capacity}.h5"
+        model_filepath = package_dir / filename
+        if not model_filepath.is_file():
+            download_model(model_capacity)
+        model.load_weights(str(model_filepath))
         model.compile('adam', 'binary_crossentropy')
 
         models[model_capacity] = model

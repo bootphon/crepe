@@ -29,9 +29,6 @@ where = ["."]
 include = ["crepe*"]
 exclude = ["tests*"]
 
-[tool.setuptools.package-data]
-crepe = ["*.h5.bz2"]
-
 [build-system]
 requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
 build-backend = "setuptools.build_meta"
