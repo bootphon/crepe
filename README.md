@@ -6,6 +6,7 @@ The update includes:
 - a general cleanup of the repo
 - a migration to pyproject.toml
 - some fiddling with the requirements
+- the autodownload of models from the original repository
 
 CREPE is a monophonic pitch tracker based on a deep convolutional neural network operating directly on the time-domain waveform input. CREPE is state-of-the-art (as of 2018), outperfoming popular pitch trackers such as pYIN and SWIPE:
 
