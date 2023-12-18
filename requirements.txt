@@ -2,4 +2,4 @@ numpy>=1.14.0
 scipy>=1.0.0
 resampy>=0.2.0
 hmmlearn>=0.2.8
-tensorflow>=2.0.0
+tensorflow==2.10
